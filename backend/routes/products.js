@@ -2,9 +2,8 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 
-// GET all products with optional pagination
-// GET /api/products
-app.get("/api/products", async (req, res) => {
+// GET all products
+router.get("/", async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT 
@@ -21,19 +20,14 @@ app.get("/api/products", async (req, res) => {
 });
 
 // GET product by ID
-// GET /api/products/:id
-app.get("/api/products/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const result = await pool.query(
-      `
-      SELECT 
-        products.*, 
-        departments.name AS department_name
-      FROM products
-      JOIN departments ON products.department_id = departments.id
-      WHERE products.id = $1
-    `,
+      `SELECT products.*, departments.name AS department_name
+       FROM products
+       JOIN departments ON products.department_id = departments.id
+       WHERE products.id = $1`,
       [id]
     );
 
